@@ -1,31 +1,43 @@
 class Char {
+  // Высвечивается сообщение *Нажмите shift*
+  // Нажимаем shift
+  // На N секунд дается ускорение
   PImage image;
-  int current_frame = 0;
   PImage frames[];
-  boolean order_flag = false;
+  int current_frame = 0;
+  
   float x, y;
   float vx, vy;
 
+  // Время одного кадра анимации
   int frameTime = 50;
   int prevTime = millis();
 
+  // Ограничиваем максимальное количество прыжков за раз
   int jumpCounter = 0;
   int maxJumps = 2;
-
+  
+  // Если True, персонаж поворачивается
   boolean rotated = false;
+  // Если True, персонаж стоит на какой-либо поверхности
   boolean standing = false;
 
+  // Здесь хранится та поверхность, на которой мы стоим
   Surface standing_on = null;
-
+  
+  // Количество прыжков, которые нужно сделать для ускорения
   int jumps_to_boost = 15;
   int total_jumps = 0;
   
+  // Множитель скорости при ускорении
   float mult = 1;
+  
+  boolean show_boost_message = false;
 
   Char(int x, int y) {
     this.x = x;
     this.y = y;
-    image = loadImage("img/char.png");
+    this.image = loadImage("img/char.png");
 
     int size_x = 5;
     int size_y = 2;
@@ -53,6 +65,18 @@ class Char {
   }
 
   void draw() {
+    if (show_boost_message) {
+      fill(color(255, 255, 255, 127));
+      textSize(40);
+      textAlign(CENTER);
+      text("Press *CONTROL* to boost", width/2, height/2);
+    }
+    
+    fill(255);
+    textSize(30);
+    textAlign(RIGHT);
+    text(str(total_jumps), width - 30, 30);
+    
     imageMode(CENTER);
     if (vx == 0)
       current_frame = 4;
@@ -63,7 +87,8 @@ class Char {
       scale(-1, 1); // You had it right!
       image(frames[current_frame], 0, 0);
       popMatrix();
-    } else {
+    } 
+    else {
       image(frames[current_frame], x, y);
     }
        
@@ -72,10 +97,7 @@ class Char {
       next_frame();
     }
     
-    fill(255);
-    textSize(30);
-    textAlign(RIGHT);
-    text(str(total_jumps), width - 30, 30);
+    
   }
 
   void next_frame() {
@@ -87,6 +109,7 @@ class Char {
   void update() {
     standing = collision();
     x += vx;
+    
     if (mult > 1 && vx != 0)
       mult -= 0.01;
     
@@ -113,8 +136,8 @@ class Char {
     // Прыжок
     case 'W':
       if (total_jumps == jumps_to_boost) {
-        mult += 1;
         total_jumps = 0;
+        show_boost_message = true;
       }
       if (jumpCounter < maxJumps) {
         vy = -20 * mult;
@@ -136,6 +159,13 @@ class Char {
       vx = 10 * mult;
       rotated = false;
       break;
+      
+    case CONTROL:
+    if (show_boost_message == true) {
+      show_boost_message = false;
+      mult += 1;
+    }
+    break;
     }
   }
 
