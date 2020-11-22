@@ -17,6 +17,11 @@ class Char {
 
   Surface standing_on = null;
 
+  int jumps_to_boost = 15;
+  int total_jumps = 0;
+  
+  float mult = 1;
+
   Char(int x, int y) {
     this.x = x;
     this.y = y;
@@ -49,14 +54,12 @@ class Char {
 
   void draw() {
     imageMode(CENTER);
-
-    
     if (vx == 0)
       current_frame = 4;
     
     if (rotated) {
       pushMatrix();
-      translate(frames[current_frame].width/6 + x, y);
+      translate(-frames[current_frame].width/4 + x, y);
       scale(-1, 1); // You had it right!
       image(frames[current_frame], 0, 0);
       popMatrix();
@@ -64,12 +67,15 @@ class Char {
       image(frames[current_frame], x, y);
     }
        
-
-
     if (millis() - prevTime > frameTime) {
       prevTime = millis();
       next_frame();
     }
+    
+    fill(255);
+    textSize(30);
+    textAlign(RIGHT);
+    text(str(total_jumps), width - 30, 30);
   }
 
   void next_frame() {
@@ -80,8 +86,9 @@ class Char {
 
   void update() {
     standing = collision();
-        
     x += vx;
+    if (mult > 1 && vx != 0)
+      mult -= 0.01;
     
     // Если не стоим на поверхности - падаем
     if (!standing) {
@@ -105,9 +112,14 @@ class Char {
     switch (_keyCode) {
     // Прыжок
     case 'W':
+      if (total_jumps == jumps_to_boost) {
+        mult += 1;
+        total_jumps = 0;
+      }
       if (jumpCounter < maxJumps) {
-        vy = -20;
+        vy = -20 * mult;
         jumpCounter++;
+        total_jumps++;
         standing = false;
         standing_on = null;
       }
@@ -115,13 +127,13 @@ class Char {
 
     // Движение влево
     case 'A':
-      vx = -10;
+      vx = -10 * mult;
       rotated = true;
       break;
     
     // Движение вправо
     case 'D':
-      vx = 10;
+      vx = 10 * mult;
       rotated = false;
       break;
     }
