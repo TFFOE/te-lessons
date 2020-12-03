@@ -1,7 +1,7 @@
-class Cloud extends Surface {
+class cloud extends Surface {
   PImage image;
   
-  Cloud(float x, float y, float w, float h, float vx, float vy) {
+  cloud(float x, float y, float w, float h, float vx, float vy) {
     super(x, y, w, h);
     image = loadImage("img/cloud.png");
     this.vx = vx;
@@ -16,6 +16,7 @@ class Cloud extends Surface {
   
   void update() {
     x += vx;
+    
     
     if (x + image.width/2 > width || x - image.width/2 < 0)
       vx *= -1;
