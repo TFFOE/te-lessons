@@ -21,7 +21,9 @@ class Char {
   int total_jumps = 0;
   
   float mult = 1;
-
+  
+  boolean show_boost_message = false;
+  
   Char(int x, int y) {
     this.x = x;
     this.y = y;
