@@ -31,8 +31,6 @@ void draw() {
   
   character.update();
   character.draw();
-  
-  
 }
 
 void keyPressed() {
