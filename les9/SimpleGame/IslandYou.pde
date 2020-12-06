@@ -11,7 +11,7 @@ class IslandYou extends Surface {
   void draw() {
     imageMode(CENTER);
     image.resize(int(w), int(height * 0.3));
-    image(image, x, y + 0);
+    image(image, x, y + 100);
   }
   
   void update() {
