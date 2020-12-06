@@ -1,38 +1,26 @@
 class Char {
-  // Высвечивается сообщение *Нажмите shift*
-  // Нажимаем shift
-  // На N секунд дается ускорение
   PImage image;
-  PImage frames[];
   int current_frame = 0;
-  
+  PImage frames[];
+  boolean order_flag = false;
   float x, y;
   float vx, vy;
 
-  // Время одного кадра анимации
   int frameTime = 50;
   int prevTime = millis();
 
-  // Ограничиваем максимальное количество прыжков за раз
   int jumpCounter = 0;
   int maxJumps = 2;
-  
-  // Если True, персонаж поворачивается
+
   boolean rotated = false;
-  // Если True, персонаж стоит на какой-либо поверхности
   boolean standing = false;
 
-  // Здесь хранится та поверхность, на которой мы стоим
   Surface standing_on = null;
-  
-  // Количество прыжков, которые нужно сделать для ускорения
+
   int jumps_to_boost = 15;
   int total_jumps = 0;
   
-  // Множитель скорости при ускорении
   float mult = 1;
-  
-  boolean show_boost_message = false;
 
   Char(int x, int y) {
     this.x = x;
@@ -97,7 +85,10 @@ class Char {
       next_frame();
     }
     
-    
+    fill(255);
+    textSize(30);
+    textAlign(RIGHT);
+    text(str(total_jumps), width - 30, 30);
   }
 
   void next_frame() {
@@ -109,7 +100,6 @@ class Char {
   void update() {
     standing = collision();
     x += vx;
-    
     if (mult > 1 && vx != 0)
       mult -= 0.01;
     
