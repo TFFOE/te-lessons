@@ -44,8 +44,8 @@ class Monster {
 
     if (vx == 0) {
       current_frame = 11;
-      float text_w = 500;
-      float text_h = 400;
+      float text_w = 250;
+      float text_h = 80;
       rectMode(CENTER);
       fill(255, 255, 255, 170);
       float rect_x = x;
@@ -78,6 +78,7 @@ class Monster {
           textAlign(CENTER, CENTER);
           textSize(100);
           fill(255, 0, 0);
+          background(0);
           text("GAME OVER", width/2, height/2);
           noLoop();
         }
