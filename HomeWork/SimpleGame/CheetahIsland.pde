@@ -1,7 +1,7 @@
-class myisland extends Surface {
+class CheetahIsland extends Surface {
   PImage image;
   
-  myisland(float x, float y, float w, float h, float vx, float vy) {
+  CheetahIsland(float x, float y, float w, float h, float vx, float vy) {
     super(x, y, w, h);
     image = loadImage("img/islandmy.png");
     this.vx = vx;
@@ -11,7 +11,7 @@ class myisland extends Surface {
   void draw() {
     imageMode(CENTER);
     image.resize(int(w), int(height * 0.3));
-    image(image, x, y + 0);
+    image(image, x, y + 80);
   }
   
   void update() {
