@@ -16,7 +16,7 @@ class Cloud extends Surface {
   
   void update() {
     x += vx;
-    
+     y += vy;
     
     if (x + image.width/2 > width || x - image.width/2 < 0)
       vx *= -1;

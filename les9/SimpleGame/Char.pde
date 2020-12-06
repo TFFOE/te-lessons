@@ -85,6 +85,9 @@ class Char {
   }
 
   void update() {
+    if (y > 1000){
+      text("Game Over",width/2,height/2);
+    }
     standing = collision();
     x += vx;
     if (mult > 1 && vx != 0)
