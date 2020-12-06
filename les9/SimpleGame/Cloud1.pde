@@ -10,13 +10,14 @@ class Cloud extends Surface {
   
   void draw() {
     imageMode(CENTER);
-    image.resize(int(w), int(height * 0.2));
+    int image_width = w;
+    int image_height = height * 0.2;
+    image.resize(image_width, image_height);
     image(image, x, y + 25);
   }
   
   void update() {
     x += vx;
-    
     
     if (x + image.width/2 > width || x - image.width/2 < 0)
       vx *= -1;
