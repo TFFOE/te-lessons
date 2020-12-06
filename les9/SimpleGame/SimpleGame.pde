@@ -17,7 +17,8 @@ void setup() {
     new FloatingIsland(width/2 + 200, height/2 - 100, 100, 10, -5, 2),
     new Cloud(width/2 + 200, height/2 - 400, 350, 10, -5, 2),
     new Surface(width/2, height - height/10, width, height/3),
-  };
+    new IslandYou(width/2 + 200, height/2 - 100, 400, 10, -5, 2),
+   };
 }
 
 void draw() {
