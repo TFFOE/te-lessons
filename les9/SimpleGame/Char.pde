@@ -1,29 +1,25 @@
 class Char {
   PImage image;
-  int current_frame = 0;
   PImage frames[];
+  int current_frame = 0;
   boolean order_flag = false;
-  float x, y;
-  float vx, vy;
-
   int frameTime = 50;
   int prevTime = millis();
+  boolean rotated = false;
+  boolean standing = false;
+  boolean collided = false;
+
+  float x, y;
+  float vx, vy;
+  Surface standing_on = null;
 
   int jumpCounter = 0;
   int maxJumps = 2;
-
-  boolean rotated = false;
-  boolean standing = false;
-
-  Surface standing_on = null;
-
   int jumps_to_boost = 15;
   int total_jumps = 0;
-  
   float mult = 1;
-  
   boolean show_boost_message = false;
-  
+
   Char(int x, int y) {
     this.x = x;
     this.y = y;
@@ -61,32 +57,32 @@ class Char {
       textAlign(CENTER);
       text("Press *CONTROL* to boost", width/2, height/2);
     }
-    
+
     fill(255);
     textSize(30);
     textAlign(RIGHT);
     text(str(total_jumps), width - 30, 30);
-    
+
     imageMode(CENTER);
     if (vx == 0)
       current_frame = 4;
-    
+
     if (rotated) {
       pushMatrix();
       translate(-frames[current_frame].width/4 + x, y);
       scale(-1, 1); // You had it right!
       image(frames[current_frame], 0, 0);
       popMatrix();
-    } 
+    }
     else {
       image(frames[current_frame], x, y);
     }
-       
+
     if (millis() - prevTime > frameTime) {
       prevTime = millis();
       next_frame();
     }
-    
+
     fill(255);
     textSize(30);
     textAlign(RIGHT);
@@ -100,23 +96,24 @@ class Char {
   }
 
   void update() {
-    standing = collision();
-    x += vx;
     if (mult > 1 && vx != 0)
       mult -= 0.01;
-    
-    // Если не стоим на поверхности - падаем
-    if (!standing) {
+
+    x += vx;
+
+    standing = check_standing();
+    collided = check_collision();
+
+    if (!standing && !collided) {
       y += vy;
       float gravity = 1.2;
       vy += gravity;
     }
-    // Если коснулись поверхности - не падаем, сбрасываем счетчик прыжков
     else {
       vy = 0;
       jumpCounter = 0;
     }
-    
+
     if (standing_on != null) {
       x += standing_on.vx;
       y += standing_on.vy;
@@ -145,13 +142,13 @@ class Char {
       vx = -10 * mult;
       rotated = true;
       break;
-    
+
     // Движение вправо
     case 'D':
       vx = 10 * mult;
       rotated = false;
       break;
-      
+
     case CONTROL:
     if (show_boost_message == true) {
       show_boost_message = false;
@@ -175,19 +172,24 @@ class Char {
     }
   }
 
-  boolean collision() {
+  boolean check_standing() {
     boolean result = false;
 
     for (Surface surf : surfaces) {
       if (vy > 0 &&
-          y + frames[current_frame].height/2 < surf.y && 
+          y + frames[current_frame].height/2 < surf.y &&
           y + vy + frames[current_frame].height/2 > surf.y &&
-          x < surf.x + surf.w/2 && 
+          x < surf.x + surf.w/2 &&
           x > surf.x - surf.w/2) {
         result = true;
         standing_on = surf;
       }
     }
+    return result;
+  }
+
+  boolean check_collision() {
+    boolean result = false;
     return result;
   }
 }
