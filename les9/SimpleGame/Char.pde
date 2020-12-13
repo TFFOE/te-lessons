@@ -85,13 +85,13 @@ class Char {
   }
 
   void update() {
-    if (y > 1050){
-textAlign(CENTER, CENTER);
-          textSize(100);
-          fill(255, 0, 0);
-          background(0);
-          text("GAME OVER", width/2, height/2);
-          noLoop();
+    if (y > 1050) {
+      textAlign(CENTER, CENTER);
+      textSize(100);
+      fill(255, 0, 0);
+      background(0);
+      text("GAME OVER", width/2, height/2);
+      noLoop();
     }
     standing = collision();
     x += vx;
@@ -118,16 +118,14 @@ textAlign(CENTER, CENTER);
 
   void move(int _keyCode) {
     switch (_keyCode) {
-    // Прыжок
+      // Прыжок
     case 'W':
       if (total_jumps == jumps_to_boost) {
-        if (backg == "img/nebo.jpg"){
-        backg = "img/neb02.jpg";
-        delay(50);
-        }
-       else{
-        backg = "img/nebo.jpg";
-
+        if (backg == "img/nebo.jpg") {
+          backg = "img/neb02.jpg";
+          delay(50);
+        } else {
+          backg = "img/nebo.jpg";
         }
         back = loadImage(backg, "jpg");
         mult += 1;
@@ -142,28 +140,27 @@ textAlign(CENTER, CENTER);
       }
       break;
 
-    // Движение влево
+      // Движение влево
     case 'A':
       vx = -18 * mult;
       rotated = true;
       break;
 
-    // Движение вправо
+      // Движение вправо
     case 'D':
       vx = 18 * mult;
       rotated = false;
       break;
-      case 'Q':
-    v=1;
+    case 'Q':
+      v=1;
       break;
-      case 'E':
-         
-    v=3;
-      break;
-      case 'R':
-   v=4;
-      break;
+    case 'E':
 
+      v=3;
+      break;
+    case 'R':
+      v=4;
+      break;
     }
   }
 
@@ -178,7 +175,6 @@ textAlign(CENTER, CENTER);
       if (vx > 0)
         vx = 0;
       break;
-      
     }
   }
 
@@ -187,15 +183,14 @@ textAlign(CENTER, CENTER);
 
     for (Surface surf : surfaces) {
       if (vy > 0 &&
-          y + frames[current_frame].height/2 < surf.y &&
-          y + vy + frames[current_frame].height/2 > surf.y &&
-          x < surf.x + surf.w/2 &&
-          x > surf.x - surf.w/2) {
+        y + frames[current_frame].height/2 < surf.y &&
+        y + vy + frames[current_frame].height/2 > surf.y &&
+        x < surf.x + surf.w/2 &&
+        x > surf.x - surf.w/2) {
         result = true;
         standing_on = surf;
       }
     }
     return result;
   }
-  
 }

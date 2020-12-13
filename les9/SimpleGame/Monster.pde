@@ -9,7 +9,7 @@ class Monster {
   boolean rotated = false;
   float x, y;
   float vx, vy;
-  
+
   Monster(float x, float y) {
     this.x = x;
     this.y = y;
@@ -42,7 +42,7 @@ class Monster {
 
   void draw() {
 
-   
+
 
     imageMode(CENTER);
     if (rotated) {
@@ -51,8 +51,7 @@ class Monster {
       scale(-1, 1); // You had it right!
       image(frames[current_frame], 0, 0);
       popMatrix();
-    } 
-    else {
+    } else {
       image(frames[current_frame], x, y);
     }
     next_frame();
@@ -60,15 +59,15 @@ class Monster {
 
 
     if (abs(character.x - x) < 100 &&
-        abs(character.y - y) < 100)
-        {
-          textAlign(CENTER, CENTER);
-          textSize(100);
-          fill(255, 0, 0);
-          background(0);
-          text("GAME OVER", width/2, height/2);
-          noLoop();
-        }
+      abs(character.y - y) < 100)
+    {
+      textAlign(CENTER, CENTER);
+      textSize(100);
+      fill(255, 0, 0);
+      background(0);
+      text("GAME OVER", width/2, height/2);
+      noLoop();
+    }
   }
 
   void next_frame() {
@@ -77,7 +76,7 @@ class Monster {
     if (current_frame >= 10)
       current_frame = 0;
   }
-  
+
   void update() {
     standing = collision();
     {
@@ -85,42 +84,38 @@ class Monster {
       if (target_x < x - 10 ) {
         vx = -v;
         rotated = true;
-      }
-      else if (target_x > x + 10) {
+      } else if (target_x > x + 10) {
         vx = v;
         rotated = false;
-      }
-      else {
+      } else {
         vx = 0;
       }
       float target_y = character.y;
       if (target_y < y - 10 ) {
         vy = -v;
         rotated = true;
-      }
-      else if (target_y > y + 10) {
+      } else if (target_y > y + 10) {
         vy = v;
         rotated = false;
-      }
-      else {
+      } else {
         vy = 0;
       }
     }
 
     x += vx;
-     y += vy;
+    y += vy;
   }
 
-  
+
   boolean collision() {
     boolean result = false;
 
     for (Surface surf : surfaces) {
       if (vy > 0 &&
-          y + frames[current_frame].height/2 < surf.y && 
-          y + vy + frames[current_frame].height/2 > surf.y &&
-          x < surf.x + surf.w/2 && 
-          x > surf.x - surf.w/2) {
+        y + frames[current_frame].height/2 < surf.y && 
+        y + vy + frames[current_frame].height/2 > surf.y &&
+        x < surf.x + surf.w/2 && 
+        x > surf.x - surf.w/2) {
         result = true;
         standing_on = surf;
       }
