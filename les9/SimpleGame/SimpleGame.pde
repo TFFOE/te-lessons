@@ -22,21 +22,21 @@ void setup() {
 }
 
 void draw() {
- 
+
   background(255);
   drawBackground(back);
-  
-  
+
+
   for (Surface surf : surfaces) {
     surf.update();
     surf.draw();
   }
-  
+
   character.update();
   character.draw();
    monster.update();
   monster.draw();
-  
+
 }
 
 void keyPressed() {
