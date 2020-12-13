@@ -161,7 +161,7 @@ textAlign(CENTER, CENTER);
     v=3;
       break;
       case 'R':
-   v=5;
+   v=4;
       break;
 
     }
