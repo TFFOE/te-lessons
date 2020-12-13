@@ -19,7 +19,7 @@ class Char {
 
   int jumps_to_boost = 15;
   int total_jumps = 0;
-  
+
   float mult = 1;
 
   Char(int x, int y) {
@@ -56,7 +56,7 @@ class Char {
     imageMode(CENTER);
     if (vx == 0)
       current_frame = 4;
-    
+
     if (rotated) {
       pushMatrix();
       translate(-frames[current_frame].width/4 + x, y);
@@ -66,12 +66,12 @@ class Char {
     } else {
       image(frames[current_frame], x, y);
     }
-       
+
     if (millis() - prevTime > frameTime) {
       prevTime = millis();
       next_frame();
     }
-    
+
     fill(255);
     textSize(30);
     textAlign(RIGHT);
@@ -85,11 +85,6 @@ class Char {
   }
 
   void update() {
-<<<<<<< HEAD
-    if (y > 1000){
-      text("Game Over",width/2,height/2);
-      noLoop();
-=======
     if (y > 1050){
 textAlign(CENTER, CENTER);
           textSize(100);
@@ -97,13 +92,12 @@ textAlign(CENTER, CENTER);
           background(0);
           text("GAME OVER", width/2, height/2);
           noLoop();
->>>>>>> 53e26add79eec5e0826bbdcc2284ffcf5596e0a7
     }
     standing = collision();
     x += vx;
     if (mult > 1 && vx != 0)
       mult -= 0.01;
-    
+
     // Если не стоим на поверхности - падаем
     if (!standing) {
       y += vy;
@@ -115,7 +109,7 @@ textAlign(CENTER, CENTER);
       vy = 0;
       jumpCounter = 0;
     }
-    
+
     if (standing_on != null) {
       x += standing_on.vx;
       y += standing_on.vy;
@@ -133,8 +127,8 @@ textAlign(CENTER, CENTER);
         }
        else{
         backg = "img/nebo.jpg";
-              
-        } 
+
+        }
         back = loadImage(backg, "jpg");
         mult += 1;
         total_jumps = 0;
@@ -153,7 +147,7 @@ textAlign(CENTER, CENTER);
       vx = -18 * mult;
       rotated = true;
       break;
-    
+
     // Движение вправо
     case 'D':
       vx = 18 * mult;
@@ -181,9 +175,9 @@ textAlign(CENTER, CENTER);
 
     for (Surface surf : surfaces) {
       if (vy > 0 &&
-          y + frames[current_frame].height/2 < surf.y && 
+          y + frames[current_frame].height/2 < surf.y &&
           y + vy + frames[current_frame].height/2 > surf.y &&
-          x < surf.x + surf.w/2 && 
+          x < surf.x + surf.w/2 &&
           x > surf.x - surf.w/2) {
         result = true;
         standing_on = surf;
