@@ -153,6 +153,17 @@ textAlign(CENTER, CENTER);
       vx = 18 * mult;
       rotated = false;
       break;
+      case 'Q':
+    v=1;
+      break;
+      case 'E':
+         
+    v=3;
+      break;
+      case 'R':
+   v=5;
+      break;
+
     }
   }
 
@@ -167,6 +178,7 @@ textAlign(CENTER, CENTER);
       if (vx > 0)
         vx = 0;
       break;
+      
     }
   }
 
@@ -185,4 +197,5 @@ textAlign(CENTER, CENTER);
     }
     return result;
   }
+  
 }

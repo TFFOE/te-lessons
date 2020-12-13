@@ -82,24 +82,24 @@ class Monster {
     standing = collision();
     {
       float target_x = character.x;
-      if (target_x < x - 0.3 ) {
-        vx = -1;
+      if (target_x < x - 10 ) {
+        vx = -v;
         rotated = true;
       }
-      else if (target_x > x + 0.3) {
-        vx = 1;
+      else if (target_x > x + 10) {
+        vx = v;
         rotated = false;
       }
       else {
         vx = 0;
       }
       float target_y = character.y;
-      if (target_y < y - 0.3 ) {
-        vy = -1;
+      if (target_y < y - 10 ) {
+        vy = -v;
         rotated = true;
       }
-      else if (target_y > y + 0.3) {
-        vy = 1;
+      else if (target_y > y + 10) {
+        vy = v;
         rotated = false;
       }
       else {

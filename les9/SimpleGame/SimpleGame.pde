@@ -2,6 +2,7 @@ PImage back;
 Char character;
 String backg = "img/nebo.jpg";
 Surface[] surfaces;
+float v =1;
 Monster monster;
 void setup() {
   fullScreen();
