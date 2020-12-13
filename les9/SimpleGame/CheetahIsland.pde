@@ -4,13 +4,13 @@ class CheetahIsland extends Surface {
   CheetahIsland(float x, float y, float w, float h, float vx, float vy) {
     super(x, y, w, h);
     image = loadImage("img/islandmy.png");
+    image.resize(int(w), int(height * 0.3));
     this.vx = vx;
     this.vy = vy;
   }
   
   void draw() {
     imageMode(CENTER);
-    image.resize(int(w), int(height * 0.3));
     image(image, x, y + 80);
   }
   

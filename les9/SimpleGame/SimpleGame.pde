@@ -16,7 +16,7 @@ void setup() {
 
   surfaces = new Surface[] {
     new FloatingIsland(width/2, height/2, 600, 10, 0, 0),
-    new Cloud(width/2 + 200, height/2 - 400, 350, 10, -5, 2),
+    new Cloud(width/2 + 200, height/2 - 100, 350, 20, 5, 0),
     new IslandYou(width/2 + 200, height/2 - 100, 400, 10, 0, 6),
     new CheetahIsland(width/2 + 200, height/2 - 100, 400, 10, 5, 2),
     new Surface(width/2, height - height/10, width * 4, height/3),
@@ -40,7 +40,7 @@ void draw() {
   character.update();
   character.draw();
 
-  monster.update();
+  //monster.update();
   monster.draw();
 }
 
