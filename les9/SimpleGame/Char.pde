@@ -85,8 +85,13 @@ class Char {
   }
 
   void update() {
-    if (y > 1000){
-      text("Game Over",width/2,height/2);
+    if (y > 1050){
+textAlign(CENTER, CENTER);
+          textSize(100);
+          fill(255, 0, 0);
+          background(0);
+          text("GAME OVER", width/2, height/2);
+          noLoop();
     }
     standing = collision();
     x += vx;
@@ -116,6 +121,15 @@ class Char {
     // Прыжок
     case 'W':
       if (total_jumps == jumps_to_boost) {
+        if (backg == "img/nebo.jpg"){
+        backg = "img/neb02.jpg";
+        delay(50);
+        }
+       else{
+        backg = "img/nebo.jpg";
+              
+        } 
+        back = loadImage(backg, "jpg");
         mult += 1;
         total_jumps = 0;
       }
@@ -130,13 +144,13 @@ class Char {
 
     // Движение влево
     case 'A':
-      vx = -10 * mult;
+      vx = -18 * mult;
       rotated = true;
       break;
     
     // Движение вправо
     case 'D':
-      vx = 10 * mult;
+      vx = 18 * mult;
       rotated = false;
       break;
     }

@@ -1,13 +1,14 @@
 PImage back;
 Char character;
-
+String backg = "img/nebo.jpg";
 Surface[] surfaces;
-
+Monster monster;
 void setup() {
   fullScreen();
   frameRate(60);
   character = new Char(width/2, 10);
-    back = loadImage("img/nebo.jpg", "jpg");
+   monster = new Monster(20, height/2 + 300);
+    back = loadImage(backg, "jpg");
   back.resize(0, height);
   surfaces = new Surface[] { 
     new FloatingIsland(width/2, height/2 + 100, 600, 10, 2, 0),
@@ -20,6 +21,7 @@ void setup() {
 }
 
 void draw() {
+ 
   background(255);
   drawBackground(back);
   
@@ -31,7 +33,8 @@ void draw() {
   
   character.update();
   character.draw();
-  
+   monster.update();
+  monster.draw();
   
 }
 
