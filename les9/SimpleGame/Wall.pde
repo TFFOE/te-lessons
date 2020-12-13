@@ -5,8 +5,9 @@ class Wall extends Obstacle {
     image = loadImage("img/wall.png");
     image.resize(int(w), int(h));
   }
-  
+
   void draw() {
     image(image, x, y);
+    box.draw();
   }
 }

@@ -23,7 +23,8 @@ void setup() {
   };
 
   obstacles = new Obstacle[] {
-    new Wall(width/2, 400, 100, 250),
+    new Wall(width/2, height - height/10 - 85, 100, 250),
+    new Wall(width/2 + 300, height - height/10 - 85, 100, 250),
   };
 }
 
@@ -37,10 +38,15 @@ void draw() {
     surf.draw();
   }
 
+  for (Obstacle obs : obstacles) {
+    obs.update();
+    obs.draw();
+  }
+
   character.update();
   character.draw();
 
-  //monster.update();
+  monster.update();
   monster.draw();
 }
 

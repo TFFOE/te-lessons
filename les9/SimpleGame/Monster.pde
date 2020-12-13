@@ -5,11 +5,13 @@ class Monster {
   boolean order_flag = false;
   Surface standing_on = null;
   boolean standing = false;
+  boolean collided = false;
 
   boolean rotated = false;
   float x, y;
   float vx, vy;
-  
+
+  HitBox box;
   Monster(float x, float y) {
     this.x = x;
     this.y = y;
@@ -38,6 +40,8 @@ class Monster {
         frames[index].resize(200, 0);
       }
     }
+
+    box = new HitBox(x, y, frames[0].width, frames[0].height);
   }
 
   void draw() {
@@ -50,6 +54,7 @@ class Monster {
       fill(255, 255, 255, 170);
       float rect_x = x;
       float rect_y = y - text_h/2 - frames[current_frame].height/2;
+      noStroke();
       rect(rect_x, rect_y, text_w, text_h);
       textAlign(LEFT, TOP);
       fill(0);
@@ -64,7 +69,7 @@ class Monster {
       scale(-1, 1); // You had it right!
       image(frames[current_frame], 0, 0);
       popMatrix();
-    } 
+    }
     else {
       image(frames[current_frame], x, y);
     }
@@ -90,56 +95,78 @@ class Monster {
     if (current_frame >= 10)
       current_frame = 0;
   }
-  
+
   void update() {
-    standing = collision();
-    {
-      float target_x = character.x;
-      if (target_x < x - 15 ) {
-        vx = -3;
-        rotated = true;
-      }
-      else if (target_x > x + 15) {
-        vx = 3;
-        rotated = false;
-      }
-      else {
-        vx = 0;
-      }
+    float target_x = character.x;
+    if (target_x < x - 15 ) {
+      vx = -3;
+      rotated = true;
     }
+    else if (target_x > x + 15) {
+      vx = 3;
+      rotated = false;
+    }
+    else {
+      vx = 0;
+    }
+
+    float old_x = x;
+    float old_y = y;
+
+    vy += gravity;
+    standing = check_standing();
 
     x += vx;
+    y += vy;
+    box.update(x, y);
 
-    // Если не стоим на поверхности - падаем
-    if (!standing) {
-      y += vy;
-      float gravity = 1.2;
-      vy += gravity;
-    }
-    // Если коснулись поверхности - не падаем, сбрасываем счетчик прыжков
-    else {
-      vy = 0;
-    }
-    
     if (standing_on != null) {
+      vy = 0;
+      y = old_y;
       x += standing_on.vx;
       y += standing_on.vy;
+      box.update(x, y);
+
+      float frame_width = this.frames[current_frame].width;
+      float surface_width = standing_on.w;
+      if (x + frame_width/2 > standing_on.x + surface_width/2 ||
+          x - frame_width/2 < standing_on.x - surface_width/2) {
+            standing_on = null;
+      }
+    }
+
+    collided = check_collision();
+
+    if (collided) {
+      x = old_x;
+      y = old_y;
+      box.update(x, y);
     }
   }
-  
-  boolean collision() {
+
+  boolean check_standing() {
     boolean result = false;
 
     for (Surface surf : surfaces) {
       if (vy > 0 &&
-          y + frames[current_frame].height/2 < surf.y && 
-          y + vy + frames[current_frame].height/2 > surf.y &&
-          x < surf.x + surf.w/2 && 
+          y + frames[current_frame].height/2 <= surf.y &&
+          y + vy + frames[current_frame].height/2 >= surf.y + surf.vy &&
+          x < surf.x + surf.w/2 &&
           x > surf.x - surf.w/2) {
         result = true;
         standing_on = surf;
       }
     }
     return result;
+  }
+
+  boolean check_collision() {
+
+    for (Obstacle obs : obstacles) {
+
+      if (obs.box.check_collision(this.box))
+        return true;
+    }
+    return false;
   }
 }

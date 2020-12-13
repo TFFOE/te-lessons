@@ -1,3 +1,5 @@
+float gravity = 1.2;
+
 class Char {
   PImage image;
   PImage frames[];
@@ -11,6 +13,7 @@ class Char {
 
   float x, y;
   float vx, vy;
+  HitBox box;
   Surface standing_on = null;
 
   int jumpCounter = 0;
@@ -48,6 +51,7 @@ class Char {
         frames[index].resize(150, 0);
       }
     }
+    box = new HitBox(x, y, frames[0].width*0.8, frames[0].height*0.8, 20);
   }
 
   void draw() {
@@ -87,6 +91,8 @@ class Char {
     textSize(30);
     textAlign(RIGHT);
     text(str(total_jumps), width - 30, 30);
+
+    box.draw();
   }
 
   void next_frame() {
@@ -99,24 +105,38 @@ class Char {
     if (mult > 1 && vx != 0)
       mult -= 0.01;
 
-    x += vx;
+    float old_x = x;
+    float old_y = y;
 
+    vy += gravity;
     standing = check_standing();
-    collided = check_collision();
 
-    if (!standing && !collided) {
-      y += vy;
-      float gravity = 1.2;
-      vy += gravity;
-    }
-    else {
-      vy = 0;
-      jumpCounter = 0;
-    }
+    x += vx;
+    y += vy;
+    box.update(x, y);
 
     if (standing_on != null) {
+      vy = 0;
+      y = old_y;
       x += standing_on.vx;
       y += standing_on.vy;
+      box.update(x, y);
+      jumpCounter = 0;
+
+      float frame_width = this.frames[current_frame].width;
+      float surface_width = standing_on.w;
+      if (x + frame_width/2 > standing_on.x + surface_width/2 ||
+          x - frame_width/2 < standing_on.x - surface_width/2) {
+            standing_on = null;
+      }
+    }
+
+    collided = check_collision();
+
+    if (collided) {
+      x = old_x;
+      y = old_y;
+      box.update(x, y);
     }
   }
 
@@ -177,8 +197,8 @@ class Char {
 
     for (Surface surf : surfaces) {
       if (vy > 0 &&
-          y + frames[current_frame].height/2 < surf.y &&
-          y + vy + frames[current_frame].height/2 > surf.y &&
+          y + frames[current_frame].height/2 <= surf.y &&
+          y + vy + frames[current_frame].height/2 >= surf.y + surf.vy &&
           x < surf.x + surf.w/2 &&
           x > surf.x - surf.w/2) {
         result = true;
@@ -189,7 +209,12 @@ class Char {
   }
 
   boolean check_collision() {
-    boolean result = false;
-    return result;
+
+    for (Obstacle obs : obstacles) {
+
+      if (obs.box.check_collision(this.box))
+        return true;
+    }
+    return false;
   }
 }
