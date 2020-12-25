@@ -63,6 +63,22 @@ class Game {
           start();
           player.jump();
           break;
+        case 'D':
+        case 'd':
+          start();
+          player.pos.x = player.pos.x + 25;
+          if (player.pos.x > 500){
+            player.pos.x = 500;
+          }
+          break;
+        case 'A':
+        case 'a':
+          start();
+          player.pos.x = player.pos.x - 25;
+          if (player.pos.x < 50){
+            player.pos.x = 150;
+          }
+          break;
 
         case 'f':
         case 'F':
