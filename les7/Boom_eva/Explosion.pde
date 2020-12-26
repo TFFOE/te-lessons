@@ -6,10 +6,10 @@ class Explosion extends Character { //<>//
 
   Explosion(int x, int y) {
     super(x, y);
-    image = loadImage("img/gep.png");
+    image = loadImage("img/jel.png");
 
-    int size_x = 2;
-    int size_y = 4;
+    int size_x = 3;
+    int size_y = 1;
 
     float frame_w = (float)image.width / size_x;
     float frame_h = (float)image.height / size_y;

@@ -5,7 +5,7 @@ Explosion chars[];
 ScreenMgr smanager = new ScreenMgr(true, true);
 
 void setup() {
-  frameRate(20);
+  frameRate(5);
 
   fullScreen();
   b = new W(1, 0);
@@ -21,8 +21,9 @@ void setup() {
 }
 
 void draw() {
+  background(255);
   smanager.work();
-  background(0);
+  background(255);
   grid.draw();
   b.update();
   b.draw();
