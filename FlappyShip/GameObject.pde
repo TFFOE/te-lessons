@@ -18,6 +18,10 @@ class GameObject {
   void setSpeed(float vx, float vy) {
     speed.set(vx, vy);
   }
+  
+  void setSpeedX(float vx) {
+    speed.x = vx;
+  }
 
   void update() {
     move();

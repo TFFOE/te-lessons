@@ -1,10 +1,8 @@
 class Game {
-  int score;
-
   boolean paused = true;
   boolean gameover = false;
 
-  Pu[] objects;
+  GameObject[] objects;
   Ship ship;
 
   PImage background;
@@ -13,11 +11,11 @@ class Game {
     background.resize(width, 0);
 
     ship = new Ship(200, height/2);
-    objects = new Pu[]{
+    objects = new GameObject[]{
+      ship,
       new Pu(width, height/2),
       new Pu(width + width/3, height/2),
     };
-    score = 0;
   }
 
   void update() {
@@ -26,24 +24,10 @@ class Game {
     for (GameObject obj : objects) {
       obj.update();
     }
-    ship.update();
-
-    pu_respawn();
 
     if (checkIfGameOver()) {
       gameover = true;
       return;
-    }
-  }
-
-  void pu_respawn() {
-    for (Pu obj : objects) {
-      if (obj.pos.x + obj.image.width < 0) {
-        obj.pos.x = width + width/6;
-        obj.hole_radius = random(250, 500);
-        obj.pos.y = random(height/6, height - height/6);
-        score++;
-      }
     }
   }
 
@@ -54,15 +38,8 @@ class Game {
     for (GameObject obj : objects) {
       obj.draw();
     }
-    ship.draw();
 
     drawPlayerZone();
-
-    fill(255);
-    textSize(50);
-    textAlign(RIGHT, TOP);
-    text("Score: " + str(score) , width, 0);
-
 
     if (gameover) {
       drawGameOverScreen();
@@ -76,8 +53,8 @@ class Game {
     if (ship.pos.y - ship.image.height/2 - 50 > height)
       return true;
 
-    for (Pu obj : objects) {
-      if (obj.check(ship))
+    for (GameObject obj : objects) {
+      if (((Sprite)obj).check(ship))
         return true;
     }
     return false;
@@ -113,12 +90,6 @@ class Game {
       }
     else
       switch (_keyCode) {
-        case RIGHT:
-          ship.setSpeedX(10);
-        break;
-        case LEFT:
-          ship.setSpeedX(-10);
-        break;
       }
   }
 
@@ -136,17 +107,6 @@ class Game {
             ship.setSpeedX(0);
         break;
       }
-    else
-      switch (_keyCode) {
-        case RIGHT:
-          if (ship.speed.x > 0)
-            ship.setSpeedX(0);
-        break;
-        case LEFT:
-          if (ship.speed.x < 0)
-            ship.setSpeedX(0);
-        break;
-      }
   }
 
   void start() {
@@ -160,17 +120,9 @@ class Game {
   }
 
   void reset() {
-    score = 0;
-    ship.moveTo(200, height/2);
-    int x = width/6;
-    for (Pu obj : objects) {
-        obj.pos.x = width + x;
-        x += width/3;
-    }
     paused = true;
     gameover = false;
-
-
+    ship.moveTo(200, height/2);
   }
 
   void drawPlayerZone() {
@@ -205,7 +157,6 @@ class Game {
     textSize(50);
     textAlign(CENTER, CENTER);
     text("You lose! Press 'F' to restart.", width/2, height/2);
-    text("Score: " + score, width/2, height/2 + 70);
   }
 
 }
