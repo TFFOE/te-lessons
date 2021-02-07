@@ -8,7 +8,6 @@ class Game {
     
   Game(int size_x, int size_y) {
     square_size = height / size_y;
-    //figure = new Figure('O', 200, 100, square_size);
     size = new PVector(size_x, size_y);
     
     map = new int[size_x][size_y];
