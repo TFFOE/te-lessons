@@ -69,4 +69,4 @@ class Square {
     this.clr = clr; 
   }
 }
-// max code
+//MC
