@@ -8,7 +8,7 @@ class Square {
     this.pos = new PVector(x, y);
     this.size = s;
   }
-  
+
   void display() {
     rectMode(CORNER); // Задаем режим отрисовки квадрата по левой верхней точке и размерам
     fill(clr); // Заполняем квадрат заданным цветом

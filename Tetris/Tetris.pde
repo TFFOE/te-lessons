@@ -17,5 +17,9 @@ void draw() {
 }
 
 void keyPressed() {
-  // Обработка нажатия клавиш 
+  game.keyPressed(key, keyCode);
+}
+
+void keyReleased() {
+  game.keyReleased(key, keyCode);
 }
