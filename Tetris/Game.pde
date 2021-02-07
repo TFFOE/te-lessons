@@ -89,7 +89,7 @@ class Game {
     strokeWeight(5);
     rectMode(CENTER);
     rect(width/2, height/2, field_width, height);
-    
+    //maax code
     strokeWeight(1);
  
     // Рисуем вертикальные линии

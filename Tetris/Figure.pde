@@ -98,3 +98,4 @@ class Figure {
     point(pos.x, pos.y);
   }
 }
+// code max
