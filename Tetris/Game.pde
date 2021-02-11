@@ -5,7 +5,7 @@ int tick_duration = TICK_DURATION_DEFAULT;
 
 class Game {
   Figure figure;
-  ArrayList<Figure> dead_figures;
+  color[][] field_colors;
   PVector size;
   float square_size;
   int timer;
@@ -13,7 +13,7 @@ class Game {
   int state = 0;
 
   Game(int size_x, int size_y) {
-    dead_figures = new ArrayList<Figure>();
+    field_colors = new color[size_x][size_y];
     square_size = height / size_y;
     size = new PVector(size_x, size_y);
 
@@ -28,11 +28,29 @@ class Game {
   }
 
   void display() {
-    draw_field();
-    for (Figure f : dead_figures)
-      f.display();
-    figure.display();
-    //draw_map();
+    switch (state) {
+      case 0:
+        draw_field();
+        draw_dead_figures();
+        figure.display();
+        //draw_map();
+      break;
+        
+      case 1:
+        drawGameOverScreen();
+        
+      break;
+    }
+  }
+  
+  void draw_dead_figures() {
+   for (int i = 0; i < size.x; ++i)
+     for (int j = 0; j < size.y; ++j)
+       if (map[i][j] == 1) {
+         Square sq = new Square(width/2 - size.x * square_size/2 + square_size * i, square_size * j, square_size);
+         sq.setColor(field_colors[i][j]);
+         sq.display();
+       }
   }
   
   void update() {
@@ -43,16 +61,18 @@ class Game {
       
       int gameover = 0;
       if (respawn == 1) {
+        // функция figureToMap вернет 1, если фигура выходит за верхнюю границу поля
         gameover = figureToMap();
+        // после того как создали фигуру, удалим заполненные строки поля
         respawnFigure();
         
         if (gameover == 1) {
-          drawGameOverScreen();
+          state = 1;
         }
       }
     }
   }
-
+  
   void drawGameOverScreen() {
     noLoop();
       
@@ -73,6 +93,7 @@ class Game {
         return 1;
       
       map[new_x][new_y] = 1;
+      field_colors[new_x][new_y] = figure.clr;
     }
     return 0;
   }
@@ -122,10 +143,12 @@ class Game {
         figure = new Figure('Z', _x + 1.5 * square_size, _y + 1.5 * square_size, square_size);
       break;
     }
+    
+    color random_color = color((int)random(0, 255), (int)random(0, 255), (int)random(0, 255));
+    figure.setColor(random_color);
   }
 
   void respawnFigure() {
-    dead_figures.add(figure);
     int random_x = 3 + (int)random(size.x - 6);
     createFigureAt(random_x, -2);
   }
