@@ -10,6 +10,7 @@ class Game {
   float square_size;
   int timer;
   int[][] map;
+  int state = 0;
 
   Game(int size_x, int size_y) {
     dead_figures = new ArrayList<Figure>();
@@ -31,15 +32,49 @@ class Game {
     for (Figure f : dead_figures)
       f.display();
     figure.display();
+    //draw_map();
+  }
+  
+  void update() {
+    if (millis() - timer >= tick_duration) {
+      timer = millis();
+      int respawn = moveFigure(0, 1);
+      println(figure.pos.x, figure.pos.y, respawn);
+      
+      int gameover = 0;
+      if (respawn == 1) {
+        gameover = figureToMap();
+        respawnFigure();
+        
+        if (gameover == 1) {
+          drawGameOverScreen();
+        }
+      }
+    }
   }
 
-  void figureToMap() {
+  void drawGameOverScreen() {
+    noLoop();
+      
+    background(0);
+    textSize(50);
+    textAlign(CENTER, CENTER);
+    text("ГАМОВЕР", width/2, height/2);
+  }
+
+  int figureToMap() {
     for (Square sq : figure.squares) {
       int new_x = (int)((sq.pos.x + figure.pos.x - width/2 + square_size * size.x/2) / square_size);
       int new_y = (int)((sq.pos.y + figure.pos.y)/ square_size);
-
+      
+      // Если упавшая фигура выходит за верхнюю границу, возвращаем 1
+      // Такой случай обрабатываем как конец игры
+      if (new_y < 0)
+        return 1;
+      
       map[new_x][new_y] = 1;
     }
+    return 0;
   }
 
   void createFigureAt(int x, int y) {
@@ -91,7 +126,7 @@ class Game {
 
   void respawnFigure() {
     dead_figures.add(figure);
-    int random_x = 2 + (int)random(size.x - 4);
+    int random_x = 3 + (int)random(size.x - 6);
     createFigureAt(random_x, -2);
   }
 
@@ -108,7 +143,9 @@ class Game {
     return false;
   }
 
-  boolean checkBottomOrMap() {
+  // Возвращает TRUE, если текущая фигура сталкивается с предыдущими фигурами
+  // или нижней границей поля
+  boolean checkBottom() {
     for (Square sq : figure.squares) {
       // Вычисляем координаты фигуры на поле
       int new_x = (int)((sq.pos.x + figure.pos.x - width/2 + square_size * size.x/2) / square_size);
@@ -117,9 +154,20 @@ class Game {
       // Проверка на нижнюю границу
       if (new_y >= size.y)
           return true;
+    }
+    return false;
+  }
+
+  boolean checkMap() {
+    for (Square sq : figure.squares) {
+      // Вычисляем координаты фигуры на поле
+      int new_x = (int)((sq.pos.x + figure.pos.x - width/2 + square_size * size.x/2) / square_size);
+      int new_y = (int)((sq.pos.y + figure.pos.y)/ square_size);
 
       // Проверка на столкновение с "мёртвыми" фигурами
-      if (new_y >= 0 && map[new_x][new_y] == 1)
+      if (new_x >= 0 && new_x < size.x &&
+          new_y >= 0 && new_y < size.y &&
+          map[new_x][new_y] == 1)
         return true;
     }
     return false;
@@ -154,7 +202,7 @@ class Game {
     }
   }
 
-  void moveFigure(int dx, int dy) {
+  int moveFigure(int dx, int dy) {
     float pdx = dx * square_size;
     float pdy = dy * square_size;
 
@@ -162,9 +210,14 @@ class Game {
 
     figure.move(pdx, pdy);
 
-    if (checkFigureCollision()) {
+    int respawn = 0;
+    if (checkBottom() || checkMap())
+      respawn = 1;
+    if (checkFigureCollision() || checkBottom() || checkMap()) {
       figure.setPosition(current_pos.x, current_pos.y);
     }
+
+    return respawn;
   }
 
   void rotateFigure() {
@@ -198,18 +251,19 @@ class Game {
     }
   }
 
-  void update() {
-    if (millis() - timer >= tick_duration) {
-      timer = millis();
-      moveFigure(0, 1);
-      println(figure.pos.x, figure.pos.y);
-
-      if (checkBottomOrMap()) {
-        moveFigure(0, -1);
-        figureToMap();
-        respawnFigure();
+  void draw_map() {
+    for (int i = 0; i < size.x; ++i) {
+      for (int j = 0; j < size.y; ++j) {
+        if (map[i][j] == 0) {
+          noFill();
+        }
+        else if (map[i][j] == 1) {
+          fill(0);
+        }
+        rectMode(CORNER);
+        rect(width - 11 * square_size + i * square_size, j * square_size, square_size, square_size);
       }
-
     }
+
   }
 }

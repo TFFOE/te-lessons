@@ -172,8 +172,8 @@ class Figure {
   void display() {
     for (Square s : squares)
       s.moveAndDraw(pos.x, pos.y);
-    stroke(0, 0, 255);
-    strokeWeight(10);
-    point(pos.x, pos.y);
+    // stroke(0, 0, 255);
+    // strokeWeight(10);
+    // point(pos.x, pos.y);
   }
 }

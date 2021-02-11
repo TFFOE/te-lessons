@@ -3,7 +3,7 @@ Game game;
 
 void setup() {
   // Задаём размер окна
-  size(600, 800);
+  size(1200, 800);
   // Инициализируем объект игры
   game = new Game(10, 20);
 }
@@ -11,7 +11,7 @@ void setup() {
 void draw() {
   // Заливаем фон белым цветом
   background(255);
-  
+
   game.update();
   game.display();
 }

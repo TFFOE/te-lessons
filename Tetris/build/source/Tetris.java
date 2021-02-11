@@ -27,7 +27,7 @@ public void setup() {
 public void draw() {
   // Заливаем фон белым цветом
   background(255);
-  
+
   game.update();
   game.display();
 }
@@ -46,19 +46,19 @@ class Figure {
   int clr = color(255, 255, 0); // Цвет фигуры
   byte rotation; // Поворот фигуры
   float size;
-  
+
   // Конструктор класса "Фигура"
   Figure(char type, float x, float y, float size) {
     this.type = type;
     this.size = size;
     pos = new PVector(x, y);
     rotation = 0; // Задаем начальный поворот фигуры
-    
+
     this.setFigure(type, rotation);
-    
+
     this.setColor(clr);
   }
-  
+
   public void setFigure(int type, byte rotation) {
     switch (type) {
       case 'I':
@@ -89,7 +89,7 @@ class Figure {
           break;
         }
       break;
-      
+
       // TODO: Ярослав
       //   []
       //   []
@@ -100,7 +100,7 @@ class Figure {
         squares[2] = new Square(-0.5f * size, -0.5f * size, size);
         squares[3] = new Square(0.5f * size, -0.5f * size, size);
       break;
-      
+
       // TODO: Коля
       // []
       // []
@@ -111,7 +111,7 @@ class Figure {
         squares[2] = new Square(-0.5f * size, -0.5f * size, size);
         squares[3] = new Square(0.5f * size, -0.5f * size, size);
       break;
-      
+
       // [][]
       // [][]
       case 'O':
@@ -120,7 +120,7 @@ class Figure {
         squares[2] = new Square(0, 0, size);
         squares[3] = new Square(0, -1 * size, size);
       break;
-      
+
       // TODO: Ева
       //   [][]
       // [][]
@@ -130,7 +130,7 @@ class Figure {
         squares[2] = new Square(-0.5f * size, -0.5f * size, size);
         squares[3] = new Square(-0.5f * size, -1.5f * size, size);
       break;
-      
+
       //   []
       // [][][]
       case 'T':
@@ -161,7 +161,7 @@ class Figure {
           break;
         }
       break;
-      
+
       // TODO: Макс
       // [][]
       //   [][]
@@ -172,18 +172,18 @@ class Figure {
         squares[3] = new Square(0.5f * size, -0.5f * size, size);
       break;
     }
-    
+
     this.setColor(clr);
   }
-  
+
   public void rotate() {
     rotation += 1;
     if (rotation == 4)
       rotation = 0;
-      
+
     this.setFigure(type, rotation);
   }
-  
+
   public void rotateBack() {
     rotation -= 1;
     if (rotation == -1)
@@ -193,29 +193,29 @@ class Figure {
   }
 
   public void setColor(int clr) {
-    this.clr = clr; 
+    this.clr = clr;
     for (Square s : squares)
       s.setColor(clr);
   }
-  
+
   public void setPosition(float x, float y) {
-    pos.set(x, y); 
+    pos.set(x, y);
   }
-  
+
   public void setType(char new_type) {
-    type = new_type; 
+    type = new_type;
   }
-  
+
   public void move(float dx, float dy) {
     pos.add(dx, dy);
   }
-  
+
   public void display() {
     for (Square s : squares)
       s.moveAndDraw(pos.x, pos.y);
-    stroke(0, 0, 255);
-    strokeWeight(10);
-    point(pos.x, pos.y);
+    // stroke(0, 0, 255);
+    // strokeWeight(10);
+    // point(pos.x, pos.y);
   }
 }
 int TICK_DURATION_DEFAULT = 500;
@@ -251,6 +251,7 @@ class Game {
     for (Figure f : dead_figures)
       f.display();
     figure.display();
+    draw_map();
   }
 
   public void figureToMap() {
@@ -328,7 +329,9 @@ class Game {
     return false;
   }
 
-  public boolean checkBottomOrMap() {
+  // Возвращает TRUE, если текущая фигура сталкивается с предыдущими фигурами
+  // или нижней границей поля
+  public boolean checkBottom() {
     for (Square sq : figure.squares) {
       // Вычисляем координаты фигуры на поле
       int new_x = (int)((sq.pos.x + figure.pos.x - width/2 + square_size * size.x/2) / square_size);
@@ -337,9 +340,20 @@ class Game {
       // Проверка на нижнюю границу
       if (new_y >= size.y)
           return true;
+    }
+    return false;
+  }
+
+  public boolean checkMap() {
+    for (Square sq : figure.squares) {
+      // Вычисляем координаты фигуры на поле
+      int new_x = (int)((sq.pos.x + figure.pos.x - width/2 + square_size * size.x/2) / square_size);
+      int new_y = (int)((sq.pos.y + figure.pos.y)/ square_size);
 
       // Проверка на столкновение с "мёртвыми" фигурами
-      if (new_y >= 0 && map[new_x][new_y] == 1)
+      if (new_x >= 0 && new_x < size.x &&
+          new_y >= 0 && new_y < size.y &&
+          map[new_x][new_y] == 1)
         return true;
     }
     return false;
@@ -374,7 +388,7 @@ class Game {
     }
   }
 
-  public void moveFigure(int dx, int dy) {
+  public int moveFigure(int dx, int dy) {
     float pdx = dx * square_size;
     float pdy = dy * square_size;
 
@@ -382,9 +396,14 @@ class Game {
 
     figure.move(pdx, pdy);
 
-    if (checkFigureCollision()) {
+    int respawn = 0;
+    if (checkBottom() || checkMap())
+      respawn = 1;
+    if (checkFigureCollision() || !checkBottom() && checkMap()) {
       figure.setPosition(current_pos.x, current_pos.y);
     }
+
+    return respawn;
   }
 
   public void rotateFigure() {
@@ -421,16 +440,31 @@ class Game {
   public void update() {
     if (millis() - timer >= tick_duration) {
       timer = millis();
-      moveFigure(0, 1);
-      println(figure.pos.x, figure.pos.y);
+      int respawn = moveFigure(0, 1);
+      println(figure.pos.x, figure.pos.y, respawn);
 
-      if (checkBottomOrMap()) {
-        moveFigure(0, -1);
+      if (respawn == 1) {
         figureToMap();
         respawnFigure();
       }
 
     }
+  }
+
+  public void draw_map() {
+    for (int i = 0; i < size.x; ++i) {
+      for (int j = 0; j < size.y; ++j) {
+        if (map[i][j] == 0) {
+          noFill();
+        }
+        else if (map[i][j] == 1) {
+          fill(0);
+        }
+        rectMode(CORNER);
+        rect(width - 11 * square_size + i * square_size, j * square_size, square_size, square_size);
+      }
+    }
+
   }
 }
 class Square {
@@ -529,7 +563,7 @@ class Square {
     this.clr = clr; 
   }
 }
-  public void settings() {  size(600, 800); }
+  public void settings() {  size(1200, 800); }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "Tetris" };
     if (passedArgs != null) {
