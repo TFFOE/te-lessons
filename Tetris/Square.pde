@@ -32,7 +32,7 @@ class Square {
     float blue = blue(clr);
     
     // Вычисляем оттенки для отрисовки граней квадрата
-    color light_color = color(red + 150, green + 150, blue + 150);
+    color light_color = color(red + 50, green + 50, blue + 50);
     color medium_color = color(red - 20, green - 20, blue - 20);
     color dark_color = color(red - 60, green - 60, blue - 60);
     

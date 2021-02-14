@@ -5,14 +5,13 @@ int tick_duration = TICK_DURATION_DEFAULT;
 
 class Game {
   Figure figure;
-  ArrayList<Figure> dead_figures;
   PVector size;
   float square_size;
   int timer;
   int[][] map;
+  color[][] clrs;
 
   Game(int size_x, int size_y) {
-    dead_figures = new ArrayList<Figure>();
     square_size = height / size_y;
     size = new PVector(size_x, size_y);
 
@@ -20,6 +19,8 @@ class Game {
     for (int i = 0; i < size_x; i++)
       for (int j = 0; j < size_y; j++)
         map[i][j] = 0;
+    
+    clrs = new color[size_x][size_y];
 
     createFigureAt(int(size.x/2), -2);
 
@@ -28,9 +29,20 @@ class Game {
 
   void display() {
     draw_field();
-    for (Figure f : dead_figures)
-      f.display();
+    draw_dead_figures();
     figure.display();
+  }
+  
+  void draw_dead_figures() {
+    for (int i = 0; i < size.x; ++i) {
+      for (int j = 0; j < size.y; ++j) {
+        if (map[i][j] == 1) {
+          Square sq = new Square(width/2 - square_size * size.x/2 + i * square_size, j * square_size, square_size);
+          sq.setColor(clrs[i][j]);
+          sq.display();
+        }
+      }
+    }
   }
 
   void figureToMap() {
@@ -39,6 +51,7 @@ class Game {
       int new_y = (int)((sq.pos.y + figure.pos.y)/ square_size);
 
       map[new_x][new_y] = 1;
+      clrs[new_x][new_y] = sq.clr;
     }
   }
 
@@ -46,17 +59,8 @@ class Game {
     float _x = width/2 - square_size * size.x/2 + x * square_size;
     float _y = 0 + y * square_size;
 
-    stroke(0, 255, 0);
-    strokeWeight(10);
-    point(_x, _y);
-
     int figure_type = (int)random(7);
 
-    //==================
-    // ДЛЯ ТЕСТА
-    //==================
-    // figure_type = 5;
-    //==================
     switch (figure_type) {
       // I
       case 0:
@@ -87,11 +91,15 @@ class Game {
         figure = new Figure('Z', _x + 1.5 * square_size, _y + 1.5 * square_size, square_size);
       break;
     }
+    
+    int red = (int)random(255);
+    int green = (int)random(255);
+    int blue = (int)random(255);
+    figure.setColor(color(red, green, blue));
   }
 
   void respawnFigure() {
-    dead_figures.add(figure);
-    int random_x = 2 + (int)random(size.x - 4);
+    int random_x = 3 + (int)random(size.x - 6);
     createFigureAt(random_x, -2);
   }
 
@@ -104,6 +112,8 @@ class Game {
       println(new_x, new_y);
       if (new_x >= size.x || new_x < 0)
           return true;
+      if (new_y >= 0 && new_y < 20 && map[new_x][new_y] == 1)
+        return true;
     }
     return false;
   }
