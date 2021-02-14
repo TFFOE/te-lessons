@@ -11,6 +11,7 @@ class Game {
   int timer;
   int[][] map;
   int state = 0;
+  int score = 0;
 
   Game(int size_x, int size_y) {
     field_colors = new color[size_x][size_y];
@@ -64,6 +65,8 @@ class Game {
         // функция figureToMap вернет 1, если фигура выходит за верхнюю границу поля
         gameover = figureToMap();
         // после того как создали фигуру, удалим заполненные строки поля
+        removeLinesAndAddScore();
+        
         respawnFigure();
         
         if (gameover == 1) {
@@ -73,12 +76,46 @@ class Game {
     }
   }
   
+  void removeLinesAndAddScore() {
+    int removed_lines_count = 0;
+    for (int j = 0; j < size.y; ++j) {
+      // Проверяем, нужно ли удалять текущую линию
+      boolean remove_this_line = true;
+      // Если в ней есть хотя бы один "пропущенный" квадратик
+      for (int i = 0; i < size.x; ++i) {
+        if (map[i][j] == 0)
+          remove_this_line = false;
+      }
+      
+      // Сдвигаем все линии над текущей вниз. Верхнюю очищаем
+      if (remove_this_line) {
+        removed_lines_count++;
+        for (int k = j; k > 0; --k) {
+          for (int i = 0; i < size.x; ++i) {
+            map[i][k] = map[i][k-1]; 
+          }
+        }
+        for (int i = 0; i < size.x; ++i) {
+          map[i][0] = 0;
+        }
+      }
+      
+      switch (removed_lines_count) {
+        case 1: score += 100; break;
+        case 2: score += 300; break;
+        case 3: score += 700; break;
+        case 4: score += 1500; break;
+      }
+    }
+  }
+  
   void drawGameOverScreen() {
     noLoop();
       
     background(0);
-    textSize(50);
+    textSize(70);
     textAlign(CENTER, CENTER);
+    fill(255, 0, 0);
     text("ГАМОВЕР", width/2, height/2);
   }
 
