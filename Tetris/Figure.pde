@@ -6,6 +6,7 @@ class Figure {
   byte rotation; // Поворот фигуры
   float size;
 
+  Figure() {}
   // Конструктор класса "Фигура"
   Figure(char type, float x, float y, float size) {
     this.type = type;

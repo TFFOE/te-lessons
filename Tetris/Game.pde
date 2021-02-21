@@ -5,6 +5,7 @@ int tick_duration = TICK_DURATION_DEFAULT;
 
 class Game {
   Figure figure;
+  Figure next_figure;
   PVector size;
   float square_size;
   int timer;
@@ -27,7 +28,8 @@ class Game {
 
     clrs = new color[size_x][size_y];
 
-    createFigureAt(int(size.x/2), -2);
+    figure = createFigureAt(int(size.x/2), -2);
+    next_figure = createFigureAt(int(size.x/2), -2);
 
     timer = millis();
   }
@@ -94,52 +96,61 @@ class Game {
     return false;
   }
 
-  void createFigureAt(int x, int y) {
+  Figure createFigureAt(int x, int y) {
+    // Пересчитываем координаты
     float _x = width/2 - square_size * size.x/2 + x * square_size;
     float _y = 0 + y * square_size;
 
+    // Рандомный тип фигуры
     int figure_type = (int)random(7);
 
+
+    Figure result = new Figure();
+    // Задаём фигуру в зависимости от типа
     switch (figure_type) {
       // I
     case 0:
-      figure = new Figure('I', _x + 2 * square_size, _y + square_size, square_size);
+      result = new Figure('I', _x + 2 * square_size, _y + square_size, square_size);
       break;
       // J
     case 1:
-      figure = new Figure('J', _x + 1.5 * square_size, _y + 1.5 * square_size, square_size);
+      result = new Figure('J', _x + 1.5 * square_size, _y + 1.5 * square_size, square_size);
       break;
       // L
     case 2:
-      figure = new Figure('L', _x + 1.5 * square_size, _y + 1.5 * square_size, square_size);
+      result = new Figure('L', _x + 1.5 * square_size, _y + 1.5 * square_size, square_size);
       break;
       // O
     case 3:
-      figure = new Figure('O', _x + square_size, _y + square_size, square_size);
+      result = new Figure('O', _x + square_size, _y + square_size, square_size);
       break;
       // S
     case 4:
-      figure = new Figure('S', _x + 1.5 * square_size, _y + 1.5 * square_size, square_size);
+      result = new Figure('S', _x + 1.5 * square_size, _y + 1.5 * square_size, square_size);
       break;
       // T
     case 5:
-      figure = new Figure('T', _x + 1.5 * square_size, _y + 1.5 * square_size, square_size);
+      result = new Figure('T', _x + 1.5 * square_size, _y + 1.5 * square_size, square_size);
       break;
       // Z
     case 6:
-      figure = new Figure('Z', _x + 1.5 * square_size, _y + 1.5 * square_size, square_size);
+      result = new Figure('Z', _x + 1.5 * square_size, _y + 1.5 * square_size, square_size);
       break;
     }
 
+    // Выбираем случайный цвет для фигуры
     int red = (int)random(255);
     int green = (int)random(255);
     int blue = (int)random(255);
-    figure.setColor(color(red, green, blue));
+    
+    result.setColor(color(red, green, blue));
+    return result;
   }
 
   void respawnFigure() {
     int random_x = 3 + (int)random(size.x - 6);
-    createFigureAt(random_x, -2);
+    figure = next_figure;
+    next_figure = createFigureAt(random_x, -2);
   }
 
   // Проверяет столкновение фигуры с окружением
@@ -158,7 +169,7 @@ class Game {
   boolean checkBottom() {
     for (Square sq : figure.squares) {
       // Вычисляем координаты фигуры на поле
-      int new_x = (int)((sq.pos.x + figure.pos.x - width/2 + square_size * size.x/2) / square_size);
+      // int new_x = (int)((sq.pos.x + figure.pos.x - width/2 + square_size * size.x/2) / square_size);
       int new_y = (int)((sq.pos.y + figure.pos.y)/ square_size);
 
       // Проверка на нижнюю границу
