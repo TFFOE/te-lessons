@@ -203,13 +203,13 @@ class Figure {
         squares[0] = new Square( 0.5 * size, -1.5 * size, size);  //center right up
         squares[1] = new Square( 0.5 * size, -0.5 * size, size);  //center right
         squares[2] = new Square(-0.5 * size, -0.5 * size, size);  //center 
-        squares[3] = new Square(-0.5 * size,  0.5 * size, size);  //center doun
+        squares[3] = new Square(-0.5 * size,  0.5 * size, size);  //center down
         break;
       case 2:
         squares[0] = new Square(-1.5 * size, -0.5 * size, size);  //center left
-        squares[1] = new Square( 0.5 * size,  0.5 * size, size);  //center doun right
+        squares[1] = new Square( 0.5 * size,  0.5 * size, size);  //center down right
         squares[2] = new Square(-0.5 * size, -0.5 * size, size);  //center 
-        squares[3] = new Square(-0.5 * size,  0.5 * size, size);  //center doun
+        squares[3] = new Square(-0.5 * size,  0.5 * size, size);  //center down
         break;
       case 3:
         squares[0] = new Square(-0.5 * size, -1.5 * size, size);  //center up
@@ -230,6 +230,12 @@ class Figure {
       rotation = 0;
 
     this.setFigure(type, rotation);
+  }
+
+  Figure copy() {
+    Figure result = new Figure(type, pos.x, pos.y, size);
+    result.setColor(clr);
+    return result;
   }
 
   void rotateBack() {
@@ -257,6 +263,8 @@ class Figure {
   void move(float dx, float dy) {
     pos.add(dx, dy);
   }
+  
+  
 
   void display() {
     for (Square s : squares)

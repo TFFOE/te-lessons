@@ -6,6 +6,7 @@ int tick_duration = TICK_DURATION_DEFAULT;
 class Game {
   Figure figure;
   Figure next_figure;
+  Figure next_figure_clone;
   PVector size;
   float square_size;
   int timer;
@@ -30,6 +31,7 @@ class Game {
 
     figure = createFigureAt(int(size.x/2), -2);
     next_figure = createFigureAt(int(size.x/2), -2);
+    next_figure_clone = next_figure.copy();
 
     timer = millis();
   }
@@ -38,6 +40,7 @@ class Game {
     switch (state) {
     case 0:
       draw_field();
+      draw_next_figure_field();
       draw_dead_figures();
       figure.display();
       draw_score();
@@ -47,6 +50,18 @@ class Game {
       drawGameoverScreen();
       break;
     }
+  }
+
+  void draw_next_figure_field() {
+    float start_x = width/2 + size.x/2 * square_size;
+    float start_y = size.y * square_size/2 - 4 * square_size;
+    
+    line(start_x, start_y, start_x + 4 * square_size, start_y);
+    line(start_x + 4 * square_size, start_y, start_x + 4 * square_size, start_y);
+    
+    stroke(255, 0, 0);
+    strokeWeight(10);
+    point(start_x, start_y);
   }
 
   void drawGameoverScreen() {
@@ -149,7 +164,7 @@ class Game {
 
   void respawnFigure() {
     int random_x = 3 + (int)random(size.x - 6);
-    figure = next_figure;
+    figure = next_figure.copy();
     next_figure = createFigureAt(random_x, -2);
   }
 
