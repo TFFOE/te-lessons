@@ -8,10 +8,7 @@ void setup() {
   game = new Game(10, 20);
 }
 
-void draw() {
-  // Заливаем фон белым цветом
-  background(255);
-  
+void draw() { 
   game.update();
   game.display();
 }

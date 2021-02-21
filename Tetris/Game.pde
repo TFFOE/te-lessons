@@ -13,6 +13,8 @@ class Game {
   int[][] map;
   color[][] clrs;
   int score = 0;
+  
+  int theme = 0;
 
   // 0 - игра запущена
   // 1 - игра ждет перезапуска
@@ -32,6 +34,7 @@ class Game {
     figure = createFigureAt(int(size.x/2), -2);
     next_figure = createFigureAt(int(size.x/2), -2);
     next_figure_clone = next_figure.copy();
+    next_figure_clone.move((size.x / 2) * square_size, (size.y / 2 - 1) * square_size);
 
     timer = millis();
   }
@@ -39,8 +42,18 @@ class Game {
   void display() {
     switch (state) {
     case 0:
+      switch (theme) {
+        case 0:
+          background(255);
+        break;
+        
+        case 1:
+          background(0);
+        break;
+      }
       draw_field();
       draw_next_figure_field();
+      draw_next_figure();
       draw_dead_figures();
       figure.display();
       draw_score();
@@ -52,16 +65,36 @@ class Game {
     }
   }
 
+  void draw_next_figure() {
+    next_figure_clone.display(); 
+  }
+
   void draw_next_figure_field() {
     float start_x = width/2 + size.x/2 * square_size;
     float start_y = size.y * square_size/2 - 4 * square_size;
     
+    strokeWeight(5);
+    switch (theme) {
+      case 0:
+        stroke(0);
+        break;
+      case 1:
+        stroke(255);
+        break;
+    }
+    
     line(start_x, start_y, start_x + 4 * square_size, start_y);
     line(start_x + 4 * square_size, start_y, start_x + 4 * square_size, start_y);
+    line(start_x + 4 * square_size, start_y, start_x + 4 * square_size, start_y + 4 * square_size);
+    line(start_x + 4 * square_size, start_y + 4 * square_size, start_x, start_y + 4 * square_size);
     
-    stroke(255, 0, 0);
-    strokeWeight(10);
-    point(start_x, start_y);
+    strokeWeight(1);
+    line(start_x, start_y + 2 * square_size, start_x + 4 * square_size, start_y + 2 * square_size);
+    line(start_x, start_y + 3 * square_size, start_x + 4 * square_size, start_y + 3 * square_size);
+    line(start_x + 2 * square_size, start_y, start_x + 2* square_size, start_y+4 * square_size); // Макс
+    line(start_x + 3 * square_size, start_y , start_x + 3 * square_size, start_y+4 * square_size); // Ева
+    line(start_x + 1 * square_size, start_y, start_x + 1 * square_size, start_y+4 * square_size); // Коля
+    line(start_x, start_y + 1 * square_size,start_x + 4 * square_size, start_y+1 * square_size); // Ярослав (Коля)
   }
 
   void drawGameoverScreen() {
@@ -78,7 +111,15 @@ class Game {
   }
 
   void draw_score() {
-    fill(0);
+    switch (theme) {
+      case 0:
+        fill(0);
+        break;
+        
+      case 1:
+        fill(255);
+        break;
+    }
     textSize(30);
     textAlign(RIGHT, TOP);
     text(score, width - 20, 10);
@@ -163,9 +204,12 @@ class Game {
   }
 
   void respawnFigure() {
-    int random_x = 3 + (int)random(size.x - 6);
+    int random_x = (int)random(-2, 3);
     figure = next_figure.copy();
-    next_figure = createFigureAt(random_x, -2);
+    moveFigure(random_x, 0);
+    next_figure = createFigureAt(int(size.x/2), -2);
+    next_figure_clone = next_figure.copy();
+    next_figure_clone.move((size.x / 2) * square_size, (size.y / 2 - 1) * square_size);
   }
 
   // Проверяет столкновение фигуры с окружением
@@ -231,8 +275,16 @@ class Game {
         case ' ':
           restartGame();
         break;
+        
+        case 'w': case 'W': case 'Ц': case 'ц':
+          switchTheme();
+        break;
       }
     }
+  }
+  
+  void switchTheme() {
+    theme = 1 - theme;
   }
 
   void restartGame() {
@@ -287,7 +339,15 @@ class Game {
     float left_border = width/2 - field_width/2;
 
     noFill();
-    stroke(0);
+    switch (theme) {
+      case 0:
+        stroke(0);
+      break;
+      
+      case 1:
+        stroke(255);
+      break;
+    }
     strokeWeight(5);
     rectMode(CENTER);
     rect(width/2, height/2, field_width, height);
